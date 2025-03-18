@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обо мне | Разработчик</title>
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #3498db;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            margin-top: 30px;
+        }
+        
+        section {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* Стили для блока с фото */
+        .profile-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+        }
+        
+        .profile-image {
+            width: 250px;  
+            height: 250px; 
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease; 
+        }
+        
+        .profile-text {
+            flex: 1;
+        }
+        
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .profile-image {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Обо мне</h1>
+    </header>
+   
+    <section class="profile-container">
+        <img src="{% static 'profile.png' %}" alt="Моё фото" class="profile-image">
+        <div class="profile-text">
+            <h2>Образование и навыки</h2>
+            <p>
+                Закончил обучение в университете искусственного интеллекта (далее- УИИ), прошел курс ChatGPTProfessional - курс по до обучению языковых моделей, созданию телеграмм ботов, веб-сервисов, веб приложений. Владею основами Python и дополнительно прохожу курс Python-разработчик с углубленным изучением Python. Работал с базой SQL во время стажировки.
+            </p>
+        </div>
+    </section>
+   
+    <section>
+        <h2>Опыт стажировок</h2>
+        <ul>
+            <li>Copilot от УИИ (помощник-продажника)</li>
+            <li>Silantev Studio по подбору релевантных тг-каналов для размещения рекламы и созданию креативов, работал с базой SQL</li>
+        </ul>
+    </section>
+   
+    <section>
+        <h2>Дипломный проект</h2>
+        <p>
+            Успешно защитил дипломный проект на тему: «Нейро-юрист в сфере банкротства», разработанного для помощи сотрудникам/работникам/гражданам в поиске информации: статей, законов, судебных решений, судебной практики, аналогичных случаев, в вопросах связанных с банкротством юридических и физических лиц, а также сокращения времени на поиски данной информации.
+        </p>
+    </section>
+   
+    <footer>
+        <p>© 2025. Все права защищены.</p>
+    </footer>
+</body>
+</html>
