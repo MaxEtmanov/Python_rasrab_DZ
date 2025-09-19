@@ -1,0 +1,13 @@
+asgiref
+django
+django-braces
+django-model-utils
+django-star-ratings
+django-taggit
+gunicorn
+pillow
+pytz
+six
+sqlparse
+swapper
+whitenoise
