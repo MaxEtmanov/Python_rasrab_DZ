@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование товара</title>
+    <style>
+        .error-message {
+            color: red;
+            display: none;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Редактирование товара</h1>
+    
+    <div id="error-message" class="error-message"></div>
+    
+    <form id="edit-product-form">
+        <div class="form-group">
+            <label for="name">Название товара*:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Описание:</label>
+            <textarea id="description" name="description" rows="4"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="price">Цена*:</label>
+            <input type="number" id="price" name="price" step="0.01" min="0.01" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="category_id">Категория (ID):</label>
+            <input type="number" id="category_id" name="category_id">
+        </div>
+        
+        <button type="submit">Сохранить изменения</button>
+    </form>
+
+    <script>
+        // Получаем ID товара из URL
+        const productId = new URLSearchParams(window.location.search).get('id');
+        
+        if (!productId) {
+            window.location.href = '/catalog'; // Перенаправляем, если ID не указан
+        }
+        
+        // Загружаем данные товара при загрузке страницы
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch(`/products/${productId}`);
+                
+                if (response.ok) {
+                    const product = await response.json();
+                    
+                    // Заполняем форму данными товара
+                    document.getElementById('name').value = product.name;
+                    document.getElementById('description').value = product.description || '';
+                    document.getElementById('price').value = product.price;
+                    
+                    if (product.category_id) {
+                        document.getElementById('category_id').value = product.category_id;
+                    }
+                } else {
+                    showError('Товар не найден');
+                }
+            } catch (error) {
+                showError('Ошибка при загрузке данных товара');
+                console.error(error);
+            }
+        });
+        
+        // Обработчик отправки формы
+        document.getElementById('edit-product-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+            const price = parseFloat(document.getElementById('price').value);
+            const categoryIdInput = document.getElementById('category_id');
+            const category_id = categoryIdInput.value ? parseInt(categoryIdInput.value) : null;
+            
+            // Валидация на клиентской стороне
+            if (!name.trim()) {
+                showError('Название товара не может быть пустым');
+                return;
+            }
+            
+            if (price <= 0) {
+                showError('Цена должна быть больше нуля');
+                return;
+            }
+            
+            // Создаем объект с данными товара
+            const productData = {
+                name,
+                description,
+                price
+            };
+            
+            // Добавляем category_id только если он указан
+            if (category_id) {
+                productData.category_id = category_id;
+            }
+            
+            // Отправка данных на сервер
+            try {
+                const response = await fetch(`/products/${productId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(productData),
+                });
+                
+                if (response.ok) {
+                    // Перенаправление на страницу каталога после успешного обновления
+                    window.location.href = '/catalog';
+                } else {
+                    const data = await response.json();
+                    showError(data.detail || 'Ошибка при обновлении товара');
+                }
+            } catch (error) {
+                showError('Произошла ошибка при отправке запроса');
+                console.error(error);
+            }
+        });
+        
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

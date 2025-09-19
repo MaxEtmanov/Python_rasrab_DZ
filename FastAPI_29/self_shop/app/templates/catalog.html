@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог товаров</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .product-list {
+            list-style: none;
+            padding: 0;
+        }
+        .product-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 10px;
+            margin-right: 5px;
+            cursor: pointer;
+            border: none;
+        }
+        .admin-button {
+            background-color: #2196F3;
+        }
+        .edit-button {
+            background-color: #FF9800;
+        }
+        .delete-button {
+            background-color: #F44336;
+        }
+        .cart-link {
+            display: block;
+            margin: 20px 0;
+        }
+        .button-group {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Каталог товаров</h1>
+    <!-- Кнопка добавления товара -->
+    <a href="/add-product" class="button admin-button">Добавить новый товар</a>
+    <ul class="product-list">
+        {% for product in products %}
+        <li class="product-item">
+            <strong>{{ product.name }}</strong><br>
+            {% if product.description %}
+            <p>{{ product.description }}</p>
+            {% endif %}
+            <p>Цена: {{ product.price }}</p>
+            <div class="button-group">
+                <a href="#" onclick="addToCart('{{ product.id }}')" class="button">Добавить в корзину</a>
+                <a href="/edit-product?id={{ product.id }}" class="button edit-button">Редактировать</a>
+                <button onclick="deleteProduct('{{ product.id }}')" class="button delete-button">Удалить</button>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <div id="cart-info">
+        <a href="/cart" class="cart-link">Перейти в корзину</a>
+    </div>
+    <script>
+        function addToCart(productId) {
+            fetch(`/cart/add/${productId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Товар добавлен в корзину');
+                    updateCartUI();
+                });
+        }
+
+        function updateCartUI() {
+            // Делаем запрос для получения актуального состояния корзины (можно улучшить)
+            fetch('/cart')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("cart-info").innerHTML = html;
+                });
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('Вы уверены, что хотите удалить этот товар?')) {
+                fetch(`/products/${productId}`, { 
+                    method: 'DELETE' 
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Перезагружаем страницу после успешного удаления
+                        window.location.reload();
+                    } else {
+                        alert('Ошибка при удалении товара');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Произошла ошибка при удалении товара');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
