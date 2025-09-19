@@ -1,0 +1,72 @@
+*, html{
+    box-sizing: border-box;
+    margin: 0;
+}
+h1{
+    text-align: center;
+    margin:0 auto;
+    padding: 1em;
+}
+ul{
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    justify-content: space-around;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+}
+ul li{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+
+    justify-items: center;
+    align-items: center;
+    align-content: space-around;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 10px;
+    text-align: center;
+}
+.total-price{
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    padding: 1em;
+    font-size: 1.2em;
+}
+.back_buy{
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    background-color: aquamarine;
+    width: 15%;
+    text-decoration: none;
+    color: black;
+    font-size: 1.1em;
+}
+.back_buy:hover{
+    background-color: rgb(0, 1, 65);
+    color: yellow;
+}
+.reset_button{
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    background-color: aquamarine;
+    width: 15%;
+    text-decoration: none;
+    color: black;
+    border: none;
+    padding: 1em;
+    font-size: 1em;
+}
+.reset_button:hover{
+    background-color: rgb(0, 1, 65);
+    color: yellow;
+}
