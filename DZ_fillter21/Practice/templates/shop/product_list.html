@@ -1,0 +1,175 @@
+{% extends 'shop/base.html' %}
+
+
+{% block title %}Фильтр продуктов{% endblock %}
+
+
+{% block content %}
+<h2>Фильтр товаров</h2>
+<form id="filter-form" method="GET">
+    <select name="category">
+        <option value="">Все категории</option>
+        <option value="electronics" {% if request.GET.category == 'electronics' %}selected{% endif %}>Электроника</option>
+        <option value="clothing" {% if request.GET.category == 'clothing' %}selected{% endif %}>Одежда</option>
+        <option value="domestic" {% if request.GET.category == 'domestic' %}selected{% endif %}>бытовой товар</option>
+    </select>
+    <input type="number" name="min_price" placeholder="Мин. цена" value="{{ request.GET.min_price }}">
+    <input type="number" name="max_price" placeholder="Макс. цена" value="{{ request.GET.max_price }}">
+   
+    <select name="period">
+        <option value="">Все время</option>
+        <option value="week" {% if request.GET.period == 'week' %}selected{% endif %}>За последнюю неделю</option>
+        <option value="month" {% if request.GET.period == 'month' %}selected{% endif %}>За последний месяц</option>
+        <option value="year" {% if request.GET.period == 'year' %}selected{% endif %}>За последний год</option>
+    </select>
+   
+    <select name="sort">
+        <option value="">Без сортировки</option>
+        <option value="-id" {% if request.GET.sort == '-id' %}selected{% endif %}>Сначала новые</option>
+        <option value="id" {% if request.GET.sort == 'id' %}selected{% endif %}>Сначала старые</option>
+        <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>Цена (по возрастанию)</option>
+        <option value="-price" {% if request.GET.sort == '-price' %}selected{% endif %}>Цена (по убыванию)</option>
+    </select>
+   
+    <button type="submit">Применить фильтр</button>
+</form>
+
+
+<h2>Список товаров</h2>
+<p id="product-count">Найдено товаров: {% if paginator %}{{ paginator.count }}{% else %}0{% endif %}</p>
+
+
+<div id="product-list">
+    {% for product in products %}
+        <div class="product">
+            <h3>{{ product.name }}</h3>
+            <p>Цена: {{ product.price }} руб.</p>
+            <p>Категория: {{ product.category }}</p>
+        </div>
+    {% empty %}
+        <p>Товары не найдены</p>
+    {% endfor %}
+</div>
+
+
+<!-- Пагинация -->
+<div id="pagination">
+    {% if page_obj %}
+        {% if page_obj.has_previous %}
+            <button onclick="loadPage(1)">Первая</button>
+            <button onclick="loadPage({{ page_obj.previous_page_number }})">Предыдущая</button>
+        {% endif %}
+       
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+       
+        {% if page_obj.has_next %}
+            <button onclick="loadPage({{ page_obj.next_page_number }})">Следующая</button>
+            <button onclick="loadPage({{ page_obj.paginator.num_pages }})">Последняя</button>
+        {% endif %}
+    {% endif %}
+</div>
+
+
+<script>
+// AJAX обработка формы
+document.getElementById('filter-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    loadProducts(1); // Всегда начинаем с первой страницы при новом поиске
+});
+
+
+// Функция загрузки товаров
+function loadProducts(page = 1) {
+    console.log('Загружаем страницу:', page); // Для отладки
+   
+    const form = document.getElementById('filter-form');
+    const formData = new FormData(form);
+   
+    // Добавляем номер страницы
+    formData.set('page', page);
+   
+    const queryString = new URLSearchParams(formData).toString();
+    console.log('Query string:', queryString); // Для отладки
+   
+    fetch(`/shop/ajax-product-list/?${queryString}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Получены данные:', data); // Для отладки
+           
+            // Обновляем список товаров
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
+           
+            if (data.products.length === 0) {
+                productList.innerHTML = '<p>Товары не найдены</p>';
+            } else {
+                data.products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product';
+                    productDiv.innerHTML = `
+                        <h3>${product.name}</h3>
+                        <p>Цена: ${product.price} руб.</p>
+                        <p>Категория: ${product.category}</p>
+                    `;
+                    productList.appendChild(productDiv);
+                });
+            }
+           
+            // Обновляем счетчик
+            document.getElementById('product-count').textContent = `Найдено товаров: ${data.total_count}`;
+           
+            // Обновляем пагинацию
+            updatePagination(data);
+        })
+        .catch(error => {
+            console.error('Ошибка при загрузке:', error);
+            alert('Произошла ошибка при загрузке данных');
+        });
+}
+
+
+// Функция загрузки конкретной страницы
+function loadPage(page) {
+    console.log('Переход на страницу:', page); // Для отладки
+    loadProducts(page);
+}
+
+
+// Обновление пагинации
+function updatePagination(data) {
+    const pagination = document.getElementById('pagination');
+    let paginationHTML = '';
+   
+    if (data.total_pages > 1) {
+        if (data.has_previous) {
+            paginationHTML += `<button onclick="loadPage(1)">Первая</button>`;
+            paginationHTML += `<button onclick="loadPage(${data.previous_page})">Предыдущая</button>`;
+        }
+       
+        paginationHTML += `<span>Страница ${data.current_page} из ${data.total_pages}</span>`;
+       
+        if (data.has_next) {
+            paginationHTML += `<button onclick="loadPage(${data.next_page})">Следующая</button>`;
+            paginationHTML += `<button onclick="loadPage(${data.total_pages})">Последняя</button>`;
+        }
+    }
+   
+    pagination.innerHTML = paginationHTML;
+}
+
+
+// Автоматическая фильтрация при изменении полей (опционально)
+document.querySelectorAll('#filter-form select, #filter-form input').forEach(element => {
+    element.addEventListener('change', function() {
+        loadProducts(1);
+    });
+});
+</script>
+
+
+{% endblock %}
