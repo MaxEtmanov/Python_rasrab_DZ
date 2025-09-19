@@ -1,0 +1,35 @@
+<h2>Статистика по категориям</h2>
+
+<div>
+    <h3>Общая статистика</h3>
+    <p>Всего товаров: {{ total_products }}</p>
+    <p>Общая стоимость: {{ total_value }} руб.</p>
+    <p>Самая низкая цена: {{ min_price|default:"—" }} руб.</p>
+    <p>Самая высокая цена: {{ max_price|default:"—" }} руб.</p>
+</div>
+
+<hr>
+
+<h3>Статистика по категориям</h3>
+<table border="1">
+    <tr>
+        <th>Категория</th>
+        <th>Количество товаров</th>
+        <th>Общая стоимость</th>
+        <th>Средняя цена</th>
+        <th>Мин. цена</th>
+        <th>Макс. цена</th>
+    </tr>
+    {% for category in categories %}
+    <tr>
+        <td>{{ category.name }}</td>
+        <td>{{ category.total_products }}</td>
+        <td>{{ category.total_value|default:"0" }} руб.</td>
+        <td>{{ category.avg_price|floatformat:2|default:"—" }} руб.</td>
+        <td>{{ category.min_price|default:"—" }} руб.</td>
+        <td>{{ category.max_price|default:"—" }} руб.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="{% url 'product_list' %}">Назад к списку товаров</a>

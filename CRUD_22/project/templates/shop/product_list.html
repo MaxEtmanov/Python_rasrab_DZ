@@ -1,0 +1,22 @@
+<h2>Product List</h2>
+
+<!-- Добавляем форму фильтрации -->
+<form method="get">
+    {{ filter_form.as_p }}
+    <button type="submit">Применить фильтры</button>
+    <a href="{% url 'product_list' %}">Сбросить</a>
+</form>
+
+<a href="{% url 'create_product' %}">Add New Product</a>
+<ul>
+    {% for product in products %}
+        <li>
+            {{ product.name }} - {{ product.price }} - {{ product.category }}
+            <a href="{% url 'product_detail' product.pk %}">View</a>
+            <a href="{% url 'update_product' product.pk %}">Edit</a>
+            <a href="{% url 'delete_product' product.pk %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'category_stats' %}">Посмотреть статистику</a>
