@@ -1,0 +1,4 @@
+django
+djangorestframework
+drf-spectacular
+drf-spectacular[swagger-ui]
