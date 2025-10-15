@@ -1,0 +1,22 @@
+@import '_variables';
+
+// Миксин для центровки текста
+@mixin center-text {
+    text-align: center;
+}
+
+// Миксин для создания кнопки
+@mixin button($bg-color, $text-color) {
+    background-color: $bg-color;
+    color: $text-color;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: $font-stack;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: darken($bg-color, 10%);
+    }
+}

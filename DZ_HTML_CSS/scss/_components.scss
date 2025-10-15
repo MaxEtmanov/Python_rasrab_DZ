@@ -1,0 +1,35 @@
+@import '_mixins';
+
+.profile-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; // круглая фотография
+    display: block;
+    margin: 0 auto 20px auto;
+    border: 2px solid $primary-color;
+}
+
+#experience ul {
+    list-style-type: square; // квадратные маркеры
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+section {
+    padding: 40px 0;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #f0f4f8; // легкий эффект при наведении
+    }
+}
+
+.button {
+    @include button($primary-color, #fff);
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    &:hover {
+        background-color: $secondary-color;
+        color: #fff;
+    }
+}

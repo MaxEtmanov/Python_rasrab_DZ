@@ -1,0 +1,29 @@
+section {
+  padding: 20px 0;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+section h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+section p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+section .job {
+  margin-bottom: 20px;
+}
+
+section .job h3 {
+  font-size: 1.5rem;
+  color: #2ecc71;
+}
+
+section .job ul {
+  list-style: disc;
+  margin-left: 20px;
+}
